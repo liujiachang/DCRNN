@@ -204,7 +204,7 @@ class DCRNNSupervisor:
 
                 optimizer.step()
             self._logger.info("epoch complete")
-            lr_scheduler.step()
+
             self._logger.info("evaluating now!")
 
             val_loss, _ = self.evaluate(dataset='val', batches_seen=batches_seen)
@@ -218,7 +218,7 @@ class DCRNNSupervisor:
             if (epoch_num % log_every) == log_every - 1:
                 message = 'Epoch [{}/{}] ({}) train_mae: {:.4f}, val_mae: {:.4f}, lr: {:.6f}, ' \
                           '{:.1f}s'.format(epoch_num, epochs, batches_seen,
-                                           np.mean(losses), val_loss, lr_scheduler.get_lr()[0],
+                                           np.mean(losses), val_loss, lr_scheduler.get_last_lr()[0],
                                            (end_time - start_time))
                 self._logger.info(message)
 
@@ -226,7 +226,7 @@ class DCRNNSupervisor:
                 test_loss, _ = self.evaluate(dataset='test', batches_seen=batches_seen)
                 message = 'Epoch [{}/{}] ({}) train_mae: {:.4f}, test_mae: {:.4f},  lr: {:.6f}, ' \
                           '{:.1f}s'.format(epoch_num, epochs, batches_seen,
-                                           np.mean(losses), test_loss, lr_scheduler.get_lr()[0],
+                                           np.mean(losses), test_loss, lr_scheduler.get_last_lr()[0],
                                            (end_time - start_time))
                 self._logger.info(message)
 
@@ -244,6 +244,8 @@ class DCRNNSupervisor:
                 if wait == patience:
                     self._logger.warning('Early stopping at epoch: %d' % epoch_num)
                     break
+
+            lr_scheduler.step()
 
     def _prepare_data(self, x, y):
         x, y = self._get_x_y(x, y)

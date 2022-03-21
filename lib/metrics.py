@@ -44,37 +44,6 @@ def masked_mape_np(preds, labels, null_val=np.nan):
         return np.mean(mape)
 
 
-# Builds loss function.
-def masked_mse_loss(scaler, null_val):
-    def loss(preds, labels):
-        if scaler:
-            preds = scaler.inverse_transform(preds)
-            labels = scaler.inverse_transform(labels)
-        return masked_mse_tf(preds=preds, labels=labels, null_val=null_val)
-
-    return loss
-
-
-def masked_rmse_loss(scaler, null_val):
-    def loss(preds, labels):
-        if scaler:
-            preds = scaler.inverse_transform(preds)
-            labels = scaler.inverse_transform(labels)
-        return masked_rmse_tf(preds=preds, labels=labels, null_val=null_val)
-
-    return loss
-
-
-def masked_mae_loss(scaler, null_val):
-    def loss(preds, labels):
-        if scaler:
-            preds = scaler.inverse_transform(preds)
-            labels = scaler.inverse_transform(labels)
-        mae = masked_mae_tf(preds=preds, labels=labels, null_val=null_val)
-        return mae
-
-    return loss
-
 
 def calculate_metrics(df_pred, df_test, null_val):
     """
